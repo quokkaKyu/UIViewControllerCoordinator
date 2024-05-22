@@ -8,16 +8,10 @@
 import Foundation
 import UIKit
 
-protocol Coordinator: AnyObject {
-    var childCoordinators: [Coordinator] { get set }
-    var navigationController: UINavigationController! { get set }
-    func start()
-}
-
 final class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinatorDelegate {
-    
     var childCoordinators: [Coordinator] = []
-    var navigationController: UINavigationController!
+    var navigationController: UINavigationController
+    var rootVC: UIViewController?
     
     var isLoggedIn: Bool = false
     
@@ -26,35 +20,34 @@ final class AppCoordinator: Coordinator, LoginCoordinatorDelegate, MainCoordinat
     }
     
     func start() {
-        if self.isLoggedIn {
-            self.showMainViewController()
+        if isLoggedIn {
+            showMainViewController()
         } else {
-            self.showLoginViewController()
+            showLoginViewController()
         }
-        
     }
     
     private func showLoginViewController() {
-        let coordinator = LoginCoordinator(navigationController: self.navigationController)
+        let coordinator = LoginCoordinator(navigationController: navigationController)
         coordinator.delegate = self
         coordinator.start()
-        self.childCoordinators.append(coordinator)
+        childCoordinators.append(coordinator)
     }
     
     private func showMainViewController() {
-        let coordinator = MainCoordinator(navigationController: self.navigationController)
+        let coordinator = MainCoordinator(navigationController: navigationController)
         coordinator.delegate = self
         coordinator.start()
-        self.childCoordinators.append(coordinator)
+        childCoordinators.append(coordinator)
     }
     
     func didLoggedIn(_ coordinator: LoginCoordinator) {
-        self.childCoordinators = self.childCoordinators.filter{ $0 !== coordinator}
-        self.showMainViewController()
+        childCoordinators = childCoordinators.filter{ $0 !== coordinator}
+        showMainViewController()
     }
     
     func didLoggedOut(_ coordinator: MainCoordinator) {
-        self.childCoordinators = self.childCoordinators.filter { $0 !== coordinator }
-        self.showLoginViewController()
+        childCoordinators = childCoordinators.filter { $0 !== coordinator }
+        showLoginViewController()
     }
 }

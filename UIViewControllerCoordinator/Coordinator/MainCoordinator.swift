@@ -8,15 +8,15 @@
 import Foundation
 import UIKit
 
-protocol MainCoordinatorDelegate {
+protocol MainCoordinatorDelegate: AnyObject {
     func didLoggedOut(_ coordinator: MainCoordinator)
 }
 
-final class MainCoordinator: Coordinator, MainViewControllerDelegate {
-    
+final class MainCoordinator: Coordinator {
+    var rootVC: UIViewController?
     var childCoordinators: [Coordinator] = []
     var delegate: MainCoordinatorDelegate?
-    var navigationController: UINavigationController!
+    var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -24,12 +24,13 @@ final class MainCoordinator: Coordinator, MainViewControllerDelegate {
     
     func start() {
         let viewController = MainViewController()
-        viewController.delegate = self
-        viewController.view.backgroundColor = .cyan
-        self.navigationController.viewControllers = [viewController]
+        viewController.coordinator = self
+        viewController.view.backgroundColor = .brown
+        rootVC = viewController
+        navigationController.viewControllers = [viewController]
     }
     
     func logout() {
-        self.delegate?.didLoggedOut(self)
+        delegate?.didLoggedOut(self)
     }
 }

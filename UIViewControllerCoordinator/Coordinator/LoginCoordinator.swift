@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-protocol LoginCoordinatorDelegate {
+protocol LoginCoordinatorDelegate: AnyObject {
     func didLoggedIn(_ coordinator: LoginCoordinator)
 }
 
-final class LoginCoordinator: Coordinator, LoginViewControllerDelegate {
-    
+final class LoginCoordinator: Coordinator {
+    var rootVC: UIViewController?
     var childCoordinators: [Coordinator] = []
-    var navigationController: UINavigationController!
+    var navigationController: UINavigationController
     var delegate: LoginCoordinatorDelegate?
     
     init(navigationController: UINavigationController!) {
@@ -24,12 +24,28 @@ final class LoginCoordinator: Coordinator, LoginViewControllerDelegate {
     
     func start() {
         let viewController = LoginViewController()
-        viewController.delegate = self
-        viewController.view.backgroundColor = .brown
-        self.navigationController.viewControllers = [viewController]
+        viewController.coordinator = self
+        viewController.view.backgroundColor = .white
+        rootVC = viewController
+        navigationController.viewControllers = [viewController]
+    }
+    
+    func push(destination: LoginDestination) {
+        switch destination {
+        case .signup:
+            let signupViewController = SignupViewController()
+            signupViewController.coordinator = self
+            signupViewController.view.backgroundColor = .black
+            navigationController.pushViewController(signupViewController, animated: false)
+        case .findID:
+            let findIDViewController = FindIDViewController()
+            findIDViewController.coordinator = self
+            findIDViewController.view.backgroundColor = .green
+            navigationController.pushViewController(findIDViewController, animated: false)
+        }
     }
     
     func login() {
-        self.delegate?.didLoggedIn(self)
+        delegate?.didLoggedIn(self)
     }
 }
