@@ -25,7 +25,7 @@ final class LoginCoordinator: Coordinator {
     func start() {
         let viewController = LoginViewController()
         viewController.coordinator = self
-        viewController.view.backgroundColor = .white
+        
         rootVC = viewController
         navigationController.viewControllers = [viewController]
     }
@@ -35,12 +35,10 @@ final class LoginCoordinator: Coordinator {
         case .signup:
             let signupViewController = SignupViewController()
             signupViewController.coordinator = self
-            signupViewController.view.backgroundColor = .black
             navigationController.pushViewController(signupViewController, animated: false)
         case .findID:
             let findIDViewController = FindIDViewController()
             findIDViewController.coordinator = self
-            findIDViewController.view.backgroundColor = .green
             navigationController.pushViewController(findIDViewController, animated: false)
         }
     }

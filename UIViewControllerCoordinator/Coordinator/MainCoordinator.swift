@@ -25,7 +25,6 @@ final class MainCoordinator: Coordinator {
     func start() {
         let viewController = MainViewController()
         viewController.coordinator = self
-        viewController.view.backgroundColor = .brown
         rootVC = viewController
         navigationController.viewControllers = [viewController]
     }

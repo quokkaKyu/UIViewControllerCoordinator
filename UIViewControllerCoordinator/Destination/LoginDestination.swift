@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 이동할 뷰
 enum LoginDestination {
     case signup
     case findID
